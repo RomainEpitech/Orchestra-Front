@@ -1,25 +1,24 @@
-<div class="bg-neutral-800/50 rounded-xl border border-neutral-700/50 shadow-lg p-6">
-    <div class="flex justify-between items-center mb-6">
+<div class="bg-neutral-800/50 rounded-xl border border-neutral-700/50 shadow-lg p-4 sm:p-6">
+    <!-- En-tête -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h2 class="text-xl font-semibold">Gestion des utilisateurs</h2>
-        <button class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+        <button class="w-full sm:w-auto px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
             Ajouter un utilisateur
         </button>
     </div>
-    
-    <div class="overflow-x-auto">
+
+    <!-- Vue desktop - Table complète -->
+    <div class="hidden md:block overflow-x-auto">
         <table class="w-full">
             <thead>
                 <tr class="text-left text-gray-400 border-b border-neutral-700">
                     <th class="py-3 px-4">Nom complet</th>
                     <th class="py-3 px-4">Email</th>
                     <th class="py-3 px-4">Rôle</th>
-                    <th class="py-3 px-4">Statut</th>
-                    <th class="py-3 px-4">Jours d'absence</th>
                     <th class="py-3 px-4">Date d'arrivée</th>
                     <th class="py-3 px-4">Actions</th>
                 </tr>
             </thead>
-
             <tbody>
                 <tr *ngFor="let user of users" 
                     class="border-b border-neutral-700/50 hover:bg-neutral-700/30 transition-colors">
@@ -39,8 +38,6 @@
                     <td class="py-4 px-4">
                         <div>
                             {{user.email}}
-                            <span *ngIf="user.email_verified_at" 
-                                class="ml-2 text-xs text-green-400">vérifié</span>
                         </div>
                     </td>
                     <td class="py-4 px-4">
@@ -53,31 +50,17 @@
                             {{getRoleName(user.role_id)}}
                         </span>
                     </td>
-                    <td class="py-4 px-4">
-                        <span [ngClass]="{
-                            'px-2 py-1 rounded-full text-xs': true,
-                            'bg-green-500/20 text-green-400': user.status,
-                            'bg-red-500/20 text-red-400': !user.status
-                        }">
-                        {{user.status ? 'Actif' : 'Inactif'}}
-                    </span>
-                    </td>
-                    <td class="py-4 px-4">{{user.jour_absence}}</td>
-                    <td class="py-4 px-4">
-                        {{user.joined_at | date:'dd/MM/yyyy'}}
-                    </td>
+                    <td class="py-4 px-4">{{user.joined_at | date:'dd/MM/yyyy'}}</td>
                     <td class="py-4 px-4">
                         <div class="flex gap-2">
                             <button class="p-2 text-blue-400 hover:bg-blue-500/20 rounded-lg">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </button>
                             <button class="p-2 text-red-400 hover:bg-red-500/20 rounded-lg">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </button>
                         </div>
@@ -86,4 +69,93 @@
             </tbody>
         </table>
     </div>
-</div>
+
+    <!-- Vue mobile - Liste simplifiée -->
+    <div class="md:hidden w-full max-w-sm mx-auto space-y-2">
+        <div *ngFor="let user of users" 
+            (click)="openUserModal(user)"
+            class="p-4 bg-neutral-800/30 rounded-lg border border-neutral-700/50 hover:bg-neutral-700/30 transition-colors cursor-pointer">
+            <div class="flex flex-col items-center justify-center text-center">
+                <div class="w-16 h-16 rounded-full bg-neutral-700 flex items-center justify-center mb-3">
+                    <span class="text-xl font-medium">
+                        {{user.firstname[0]}}{{user.lastname[0]}}
+                    </span>
+                </div>
+                <div class="space-y-2">
+                    <p class="font-medium text-lg">{{user.firstname}} {{user.lastname}}</p>
+                    <span [ngClass]="{
+                        'px-3 py-1 rounded-full text-xs inline-block': true,
+                        'bg-blue-500/20 text-blue-400': user.role_id === 1,
+                        'bg-purple-500/20 text-purple-400': user.role_id === 2,
+                        'bg-green-500/20 text-green-400': user.role_id === 3
+                    }">
+                        {{getRoleName(user.role_id)}}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal (ajustement pour mobile) -->
+    <div *ngIf="selectedUser" 
+        class="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+        <div class="bg-neutral-800 rounded-xl max-w-lg w-full p-4 sm:p-6 relative">
+            <!-- En-tête modal -->
+            <div class="flex flex-col sm:flex-row justify-between items-center text-center sm:text-left gap-4 sm:gap-0 mb-6">
+                <div class="flex flex-col sm:flex-row items-center sm:items-start gap-3">
+                    <div class="w-16 h-16 sm:w-12 sm:h-12 rounded-full bg-neutral-700 flex items-center justify-center">
+                        <span class="text-xl font-medium">
+                            {{selectedUser.firstname[0]}}{{selectedUser.lastname[0]}}
+                        </span>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <h3 class="text-xl font-semibold">{{selectedUser.firstname}} {{selectedUser.lastname}}</h3>
+                        <p class="text-gray-400">ID: {{selectedUser.id}}</p>
+                    </div>
+                </div>
+                <button (click)="closeUserModal()" class="absolute right-4 top-4 p-2 hover:bg-neutral-700/30 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+    
+            <!-- Contenu modal -->
+            <div class="space-y-4">
+                <div class="space-y-4">
+                    <div class="text-center sm:text-left">
+                        <p class="text-gray-400 text-sm mb-1">Email</p>
+                        <p class="break-all">{{selectedUser.email}}</p>
+                    </div>
+    
+                    <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
+                        <div class="text-center sm:text-left">
+                            <p class="text-gray-400 text-sm mb-1">Rôle</p>
+                            <span [ngClass]="{
+                                'px-3 py-1 rounded-full text-xs inline-block': true,
+                                'bg-blue-500/20 text-blue-400': selectedUser.role_id === 1,
+                                'bg-purple-500/20 text-purple-400': selectedUser.role_id === 2,
+                                'bg-green-500/20 text-green-400': selectedUser.role_id === 3
+                            }">
+                                {{getRoleName(selectedUser.role_id)}}
+                            </span>
+                        </div>
+                        <div class="text-center sm:text-left">
+                            <p class="text-gray-400 text-sm mb-1">Date d'arrivée</p>
+                            <p>{{selectedUser.joined_at | date:'dd/MM/yyyy'}}</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Actions -->
+                <div class="flex justify-center sm:justify-end gap-3 mt-6 pt-6 border-t border-neutral-700">
+                    <button class="px-6 py-2 text-blue-400 hover:bg-blue-500/20 rounded-lg">
+                        Modifier
+                    </button>
+                    <button class="px-6 py-2 text-red-400 hover:bg-red-500/20 rounded-lg">
+                        Supprimer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>

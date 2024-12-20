@@ -1,4 +1,34 @@
-/* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ajoutez ces styles personnalisés */
+html, body {
+    height: 100%;
+    overflow-x: hidden;
+    background-color: rgb(23 23 23);
+}
+
+/* Style pour le contenu scrollable */
+.overflow-x-auto {
+    @apply scrollbar-thin scrollbar-thumb-neutral-600 scrollbar-track-neutral-800;
+}
+
+/* Optionnel : Style pour la barre de défilement */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(38 38 38);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(82 82 82);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(115 115 115);
+}

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { User } from '../../interfaces/User';
 import { CommonModule } from '@angular/common';
 
@@ -10,6 +9,8 @@ import { CommonModule } from '@angular/common';
   templateUrl: './personal-dashboard.component.html'
 })
 export class PersonalDashboardComponent {
+  isMobileMenuOpen = false;
+
   users: User[] = [
     {
       id: 1,
@@ -62,5 +63,15 @@ export class PersonalDashboardComponent {
       3: 'Employé'
     };
     return roles[roleId as keyof typeof roles] || 'Inconnu';
+  }
+
+  selectedUser: User | null = null;
+  
+  openUserModal(user: User): void {
+    this.selectedUser = user;
+  }
+
+  closeUserModal(): void {
+    this.selectedUser = null;
   }
 }
